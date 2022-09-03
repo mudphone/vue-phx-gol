@@ -7,6 +7,9 @@
   import {getInitState, updateState} from './game/state'
 
 
+  // If you want to use Phoenix channels, run `mix help phx.gen.channel`
+  // to get started and then uncomment the line below.
+  import { channel } from "./phoenix/user_socket"
 
   const DEFAULT_ROWS = 20
   const DEFAULT_COLS = 20
@@ -16,6 +19,7 @@
 
   const DEFAULT_CELLS_SIZE = 20
   const MAX_CELLS_SIZE = 80
+
 
 
   const iterateGame = (rows, cols, state) => {
@@ -51,17 +55,33 @@
   const toggleCell = (rowIdx, colIdx) => {
     const cell = gameState.value[rowIdx][colIdx]
     gameState.value[rowIdx][colIdx] = !cell
+    pushState(gameState.value)
   }
 
 
   const togglePlayPause = () => {
     if (timer.value) {
-      clearTimeout(timer.value)
-      timer.value = null
+      doPause()
+      pushPlayPause(false)
     } else {
-      timer.value = startGame(gameState, INTERVAL_MILLIS)
+      doPlay()
+      pushPlayPause(true)
     }
   }
+
+
+  const doPlay = () => {
+    if (timer.value) return
+    timer.value = startGame(gameState, INTERVAL_MILLIS)
+  }
+
+
+  const doPause = () => {
+    if (!timer.value) return
+    clearTimeout(timer.value)
+    timer.value = null
+  }
+
 
   const playPauseText = computed(() => {
     if (timer.value) return 'Pause'
@@ -74,7 +94,26 @@
     const initialState = getInitState(numRows.value, numCols.value)
     gameState.value = initialState
     timer.value = startGame(gameState, INTERVAL_MILLIS)
+    pushState(initialState)
+    pushPlayPause(true)
   }
+
+  // Channels
+  const pushState = (state) => {
+    channel.push("push_state", {state: state})
+  }
+
+  channel.on("push_state", payload => {
+    gameState.value = payload.state
+  })
+
+  const pushPlayPause = (isPlay) => {
+    channel.push("push_play_pause", {is_play: isPlay})
+  }
+
+  channel.on("push_play_pause", payload => {
+    payload.is_play ? doPlay() : doPause()
+  })
 </script>
 
 <template>
