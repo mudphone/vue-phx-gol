@@ -21,6 +21,7 @@ config :gol, GolWeb.Endpoint,
       "--",
       "--port",
       "8042",
+      "--strictPort",
       cd: Path.expand("../gol-frontend", __DIR__)
     ]
   ]

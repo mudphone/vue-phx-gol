@@ -1,6 +1,6 @@
 .PHONY: kill-all-npm-run-dev
 kill-all-npm-run-dev:
-	pkill "npm run dev"
+	pkill "npm run dev -- --port 8042"
 
 .PHONY: kill-all-by-port
 kill-all-by-port:
