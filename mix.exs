@@ -56,7 +56,9 @@ defmodule Gol.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get"]
+      setup: ["deps.get"],
+      "kill-all-npm-run-dev": ["cmd pkill 'npm run dev'"],
+      "kill-by-port": ["cmd lsof -t -i:8042 | xargs -r kill"],
     ]
   end
 end

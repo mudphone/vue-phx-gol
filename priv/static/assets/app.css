@@ -1,5 +1,7 @@
 /* This file is for your main application CSS */
-@import "./phoenix.css";
+
+/* Remove phoenix.css in favor of default Vue CSS */
+/* @import "./phoenix.css"; */
 
 /* Alerts and form errors used by phx.new */
 .alert {

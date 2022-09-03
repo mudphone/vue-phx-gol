@@ -14,7 +14,16 @@ config :gol, GolWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "cN+08m0X91iXMVbes4gxef+DRPTNKSf1h4HsutGcob1V4qhzH2XVWW49zbP/CQgZ",
-  watchers: []
+  watchers: [
+    npm: [
+      "run",
+      "dev",
+      "--",
+      "--port",
+      "8042",
+      cd: Path.expand("../gol-frontend", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #
